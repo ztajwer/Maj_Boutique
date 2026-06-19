@@ -10,12 +10,13 @@ export default function DoorSceneLighting({ brightness = 0 }: DoorSceneLightingP
 
   return (
     <>
-      <ambientLight intensity={0.48 + b * 0.45} color="#FFF9F5" />
-      <hemisphereLight args={["#FFFFFF", "#E8DDD4", 0.34 + b * 0.28]} />
-      <directionalLight position={[0, 7, 5]} intensity={0.9 + b * 0.65} color="#FFF8F2" />
-      <directionalLight position={[-3, 2, 4]} intensity={0.32 + b * 0.24} color="#FFD878" />
-      <directionalLight position={[3, 2, 4]} intensity={0.32 + b * 0.24} color="#FFD878" />
-      <pointLight position={[0, 1.2, 1.8]} intensity={0.55 + b * 0.35} color="#E8C872" distance={8} />
+      <ambientLight intensity={0.62 + b * 0.5} color="#FFF9F5" />
+      <hemisphereLight args={["#FFF8E8", "#E8DDD4", 0.42 + b * 0.3]} />
+      <directionalLight position={[0, 7, 5]} intensity={1.15 + b * 0.7} color="#FFF8F2" />
+      <directionalLight position={[-3, 2.5, 4]} intensity={0.55 + b * 0.3} color="#FFE8A0" />
+      <directionalLight position={[3, 2.5, 4]} intensity={0.55 + b * 0.3} color="#FFE8A0" />
+      <pointLight position={[0, 1.4, 2.2]} intensity={0.85 + b * 0.4} color="#F5D878" distance={10} />
+      <pointLight position={[0, 0.5, 1.2]} intensity={0.35 + b * 0.2} color="#FFFFFF" distance={6} />
     </>
   );
 }

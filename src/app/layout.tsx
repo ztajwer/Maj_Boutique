@@ -5,13 +5,8 @@ import SeoJsonLd from "@/components/SeoJsonLd";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
-const EARLY_IMAGE_URLS = [
-  "/bg.png",
-  "/logo.png",
-  "/door_bg.png",
-  "/background.png",
-  "/star.png",
-];
+const CRITICAL_IMAGE_URLS = ["/wh_logo.jpeg", "/door_bg.png", "/logo.png", "/star.png"];
+const DEFERRED_IMAGE_URLS = ["/background.png", "/bg.png"];
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -103,15 +98,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preload" href="/bg.png" as="image" type="image/png" fetchPriority="high" />
-        <link rel="preload" href="/logo.png" as="image" type="image/png" fetchPriority="high" />
+        <link rel="preload" href="/wh_logo.jpeg" as="image" fetchPriority="high" />
         <link rel="preload" href="/door_bg.png" as="image" type="image/png" fetchPriority="high" />
-        <link rel="preload" href="/background.png" as="image" type="image/png" />
+        <link rel="preload" href="/logo.png" as="image" type="image/png" />
         <link rel="preload" href="/star.png" as="image" type="image/png" />
         <link rel="preload" href="/door-chime.mp3" as="fetch" crossOrigin="anonymous" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var u=${JSON.stringify(EARLY_IMAGE_URLS)};for(var i=0;i<u.length;i++){fetch(u[i],{cache:"force-cache",priority:"high"}).catch(function(){});}})();`,
+            __html: `(function(){var c=${JSON.stringify(CRITICAL_IMAGE_URLS)};var d=${JSON.stringify(DEFERRED_IMAGE_URLS)};for(var i=0;i<c.length;i++){fetch(c[i],{cache:"force-cache",priority:"high"}).catch(function(){});}setTimeout(function(){for(var j=0;j<d.length;j++){fetch(d[j],{cache:"force-cache"}).catch(function(){});}},300);})();`,
           }}
         />
       </head>

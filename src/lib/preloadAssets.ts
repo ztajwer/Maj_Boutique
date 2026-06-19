@@ -1,12 +1,7 @@
 import { PRODUCT_PATHS } from "@/data/products";
 
-const IMAGE_URLS = [
-  "/bg.png",
-  "/logo.png",
-  "/door_bg.png",
-  "/background.png",
-  "/star.png",
-] as const;
+const CRITICAL_IMAGES = ["/wh_logo.jpeg", "/door_bg.png", "/logo.png", "/star.png"] as const;
+const DEFERRED_IMAGES = ["/background.png", "/bg.png"] as const;
 
 let booted = false;
 let productsPreloadStarted = false;
@@ -43,16 +38,19 @@ function preloadGltf(path: string) {
   });
 }
 
-/** Parallel boot — runs on page load while loader plays (never blocks the 3s timer). */
+/** Runs immediately on page load — parallel, never blocks the 3s loader timer. */
 export function bootCriticalAssets() {
   if (typeof window === "undefined" || booted) return;
   booted = true;
 
-  IMAGE_URLS.forEach((url) => void warmFetch(url));
+  CRITICAL_IMAGES.forEach((url) => void warmFetch(url));
+
+  window.setTimeout(() => {
+    DEFERRED_IMAGES.forEach((url) => void warmFetch(url));
+  }, 200);
 
   void getDrei().then(({ useTexture }) => {
     useTexture.preload("/door_bg.png");
-    useTexture.preload("/background.png");
   });
 
   void import("@/components/DoorSceneCanvas");
@@ -72,6 +70,10 @@ export function bootCriticalAssets() {
 }
 
 export function bootAfterLoader() {
+  void warmFetch("/background.png");
+  void getDrei().then(({ useTexture }) => {
+    useTexture.preload("/background.png");
+  });
   preloadTableAsset();
   prefetchShopChunk();
 }
@@ -93,13 +95,14 @@ export function preloadProductAssets() {
     window.setTimeout(() => {
       void warmFetch(path);
       preloadGltf(path);
-    }, index * 60);
+    }, index * 50);
   });
 }
 
 export function startDoorTransitionPreload() {
   prefetchShopChunk();
   preloadProductAssets();
+  void warmFetch("/background.png");
 }
 
 export function startShopPreload() {

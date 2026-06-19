@@ -15,7 +15,7 @@ export function bootCriticalAssets() {
 }
 
 export function preloadTableAsset() {
-  // Table GLB is no longer used on the homepage carousel view.
+  preloadGltf("/table-3d.glb");
 }
 
 export function preloadProductAssets() {

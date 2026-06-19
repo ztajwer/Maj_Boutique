@@ -2,10 +2,10 @@
 
 import dynamic from "next/dynamic";
 
-const BoutiqueExperience = dynamic(() => import("./BoutiqueExperience"), {
+const HomeExperience = dynamic(() => import("./HomeExperience"), {
   ssr: false,
 });
 
 export default function BoutiquePage() {
-  return <BoutiqueExperience />;
+  return <HomeExperience />;
 }

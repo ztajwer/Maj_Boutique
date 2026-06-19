@@ -1,12 +1,8 @@
 "use client";
 
-interface DoorBackgroundProps {
-  fadeProgress?: number;
-}
-
-export default function DoorBackground({ fadeProgress = 0 }: DoorBackgroundProps) {
-  const doorFrameOpacity = Math.max(0, 0.92 - fadeProgress * 1.35);
-  const vignetteOpacity = Math.max(0, 0.22 - fadeProgress * 0.28);
+export default function DoorBackground() {
+  const doorFrameOpacity = 1;
+  const vignetteOpacity = 0.22;
 
   return (
     <>

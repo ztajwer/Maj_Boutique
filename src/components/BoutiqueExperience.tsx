@@ -104,7 +104,7 @@ function BoutiqueExperienceInner() {
     <div className="relative h-full w-full bg-maj-cream">
       <Loader onComplete={handleLoadComplete} />
 
-      {ready && (
+      {entered && (
         <div className="shop-room-bg pointer-events-none fixed inset-0 z-[1]">
           <BoutiqueBackground />
         </div>
@@ -124,7 +124,7 @@ function BoutiqueExperienceInner() {
             showInvite ? "door-scene--blurred" : ""
           }`}
         >
-          <DoorBackground fadeProgress={doorProgress} />
+          <DoorBackground />
           <BrightnessWash intensity={brightness} />
         </div>
       )}

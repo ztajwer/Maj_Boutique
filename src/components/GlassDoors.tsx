@@ -30,7 +30,7 @@ const INSET_Y = 0.105;
 const FACE_W = PANEL_W - INSET_X * 2;
 const FACE_H = PANEL_H - INSET_Y * 2;
 
-useTexture.preload("/background.png");
+useTexture.preload("/door_bg.png");
 
 function RoseGoldMat({
   color = CHAMPAGNE,
@@ -105,9 +105,9 @@ function MullionBar({
   );
 }
 
-/** Boutique interior visible through glass — matches background.png */
-export function DoorInteriorView() {
-  const texture = useTexture("/background.png");
+/** Entrance foyer visible through glass — door_bg.png only (not shop interior). */
+function DoorEntranceView() {
+  const texture = useTexture("/door_bg.png");
   texture.colorSpace = THREE.SRGBColorSpace;
 
   const img = texture.image as HTMLImageElement | undefined;
@@ -120,16 +120,6 @@ export function DoorInteriorView() {
       <mesh renderOrder={-20}>
         <planeGeometry args={[planeW, planeH]} />
         <meshBasicMaterial map={texture} toneMapped={false} depthWrite={false} />
-      </mesh>
-      <mesh position={[0, 0, 0.02]} renderOrder={-19}>
-        <planeGeometry args={[planeW * 0.92, planeH * 0.88]} />
-        <meshBasicMaterial
-          color="#FFF6EE"
-          transparent
-          opacity={0.06}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
       </mesh>
     </group>
   );
@@ -323,7 +313,7 @@ export default function GlassDoors({ progressRef, animRef }: GlassDoorsProps) {
 
   return (
     <group position={[0, 0, 0]}>
-      <DoorInteriorView />
+      <DoorEntranceView />
       <DoorFrame />
       <DoorPanel side="left" targetAngleRef={leftTargetRef} animRef={animRef} />
       <DoorPanel side="right" targetAngleRef={rightTargetRef} animRef={animRef} />

@@ -15,6 +15,8 @@ export default function Loader({ onComplete }: LoaderProps) {
   const [fadeOut, setFadeOut] = useState(false);
   const [progress, setProgress] = useState(0);
   const finishedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
@@ -23,32 +25,27 @@ export default function Loader({ onComplete }: LoaderProps) {
     setFadeOut(true);
     window.setTimeout(() => {
       setVisible(false);
-      onComplete();
+      onCompleteRef.current();
     }, LOADER_FADE_MS);
-  }, [onComplete]);
-
-  useEffect(() => {
-    bootCriticalAssets();
   }, []);
 
   useEffect(() => {
-    const start = performance.now();
-    let frame = 0;
+    bootCriticalAssets();
 
-    const tick = () => {
+    const start = performance.now();
+    const progressTimer = window.setInterval(() => {
       const elapsed = performance.now() - start;
       const t = Math.min(1, elapsed / LOADER_DURATION_MS);
       const eased = t * t * (3 - 2 * t);
       setProgress(Math.round(eased * 100));
-      if (elapsed >= LOADER_DURATION_MS) {
-        finish();
-        return;
-      }
-      frame = requestAnimationFrame(tick);
-    };
+    }, 32);
 
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const doneTimer = window.setTimeout(finish, LOADER_DURATION_MS);
+
+    return () => {
+      window.clearInterval(progressTimer);
+      window.clearTimeout(doneTimer);
+    };
   }, [finish]);
 
   if (!visible) return null;

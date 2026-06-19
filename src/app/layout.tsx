@@ -99,6 +99,7 @@ export default function RootLayout({
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preload" href="/logo.png" as="image" type="image/png" fetchPriority="high" />
+        <link rel="preload" href="/door_bg.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/star.png" as="image" type="image/png" />
         <link rel="preload" href="/door-chime.mp3" as="fetch" crossOrigin="anonymous" />
         <script

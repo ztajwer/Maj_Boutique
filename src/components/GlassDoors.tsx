@@ -3,40 +3,50 @@
 import { useRef, type MutableRefObject } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { DOOR_VIEW } from "@/lib/doorAlignment";
 
 interface GlassDoorsProps {
   progressRef: MutableRefObject<number>;
   animRef?: MutableRefObject<{ phase: string }>;
 }
 
-/** Aligned to the door opening in door_bg.png */
-export const PANEL_W = 1.2;
-export const PANEL_H = 2.82;
-export const DOOR_ASSEMBLY_H = PANEL_H + 0.18;
-const PANEL_D = 0.038;
+export const PANEL_W = DOOR_VIEW.panelW;
+export const PANEL_H = DOOR_VIEW.panelH;
+export { DOOR_ASSEMBLY_H } from "@/lib/doorAlignment";
+
+const PANEL_D = 0.036;
 const MAX_OPEN = Math.PI * 0.44;
-const GAP = 0.012;
+const GAP = DOOR_VIEW.gap;
 
-const CHAMPAGNE = "#D4B48A";
-const CHAMPAGNE_LIGHT = "#E8D4B0";
-const MULLION = "#C9A87A";
+const CHAMPAGNE = "#C9A06A";
+const CHAMPAGNE_LIGHT = "#DFC898";
+const CHAMPAGNE_BRIGHT = "#EDD9B0";
+const MULLION = "#D4B87A";
+const FRAME_DARK = "#2C2620";
 
-const INSET_X = 0.086;
-const INSET_Y = 0.102;
-const FACE_W = PANEL_W - INSET_X * 2;
-const FACE_H = PANEL_H - INSET_Y * 2;
+const FRAME_X = 0.092;
+const FRAME_Y = 0.108;
+const GLASS_W = PANEL_W - FRAME_X * 2;
+const GLASS_H = PANEL_H - FRAME_Y * 2;
 
-function SatinGoldMat({ color = CHAMPAGNE }: { color?: string }) {
+function GoldMat({
+  color = CHAMPAGNE,
+  roughness = 0.26,
+  envIntensity = 0.58,
+}: {
+  color?: string;
+  roughness?: number;
+  envIntensity?: number;
+}) {
   return (
     <meshPhysicalMaterial
       color={color}
-      metalness={0.88}
-      roughness={0.36}
-      envMapIntensity={0.52}
-      clearcoat={0.42}
-      clearcoatRoughness={0.14}
-      reflectivity={0.62}
-      depthWrite
+      metalness={0.92}
+      roughness={roughness}
+      envMapIntensity={envIntensity}
+      clearcoat={0.38}
+      clearcoatRoughness={0.1}
+      reflectivity={0.68}
     />
   );
 }
@@ -49,14 +59,14 @@ function MullionBar({
   size: [number, number, number];
 }) {
   return (
-    <mesh position={position} renderOrder={2}>
+    <mesh position={position} renderOrder={3}>
       <boxGeometry args={size} />
       <meshPhysicalMaterial
         color={MULLION}
-        metalness={0.9}
-        roughness={0.28}
-        envMapIntensity={0.48}
-        clearcoat={0.35}
+        metalness={0.94}
+        roughness={0.22}
+        envMapIntensity={0.55}
+        clearcoat={0.4}
         polygonOffset
         polygonOffsetFactor={-1}
         polygonOffsetUnits={-1}
@@ -65,35 +75,62 @@ function MullionBar({
   );
 }
 
-function TBarHandle({ side }: { side: "left" | "right" }) {
-  const meetX = side === "left" ? PANEL_W / 2 - 0.05 : -PANEL_W / 2 + 0.05;
-  const barShift = side === "left" ? 0.04 : -0.04;
-  const z = PANEL_D / 2 + 0.01;
+/** Vertical pull bar at the meeting stile — matches door_bg.png */
+function VerticalHandle({ side }: { side: "left" | "right" }) {
+  const meetX = side === "left" ? PANEL_W / 2 - 0.042 : -PANEL_W / 2 + 0.042;
+  const z = PANEL_D / 2 + 0.012;
 
   return (
-    <group position={[meetX, -0.01, z]} renderOrder={3}>
-      <mesh position={[barShift, 0, 0]}>
-        <boxGeometry args={[0.1, 0.012, 0.012]} />
-        <SatinGoldMat color={CHAMPAGNE_LIGHT} />
-      </mesh>
+    <group position={[meetX, 0.02, z]} renderOrder={4}>
       <mesh>
-        <boxGeometry args={[0.011, 0.05, 0.011]} />
-        <SatinGoldMat color={CHAMPAGNE_LIGHT} />
+        <boxGeometry args={[0.014, 0.42, 0.016]} />
+        <GoldMat color={CHAMPAGNE_BRIGHT} roughness={0.18} />
       </mesh>
     </group>
   );
 }
 
-function DoorGrid({ z }: { z: number }) {
-  const hPositions = [FACE_H * 0.28, -FACE_H * 0.28];
+/** Three horizontals dividing glass into four rows */
+function HorizontalGrid({ z }: { z: number }) {
+  const rowYs = [GLASS_H * 0.22, 0, -GLASS_H * 0.22];
+
+  return (
+    <>
+      {rowYs.map((y) => (
+        <MullionBar key={`h-${y}`} position={[0, y, z]} size={[GLASS_W, 0.0045, 0.006]} />
+      ))}
+    </>
+  );
+}
+
+function DoorLeafGrid({ z, side }: { z: number; side: "left" | "right" }) {
+  const vertX = side === "left" ? GLASS_W * 0.22 : -GLASS_W * 0.22;
 
   return (
     <group>
-      <MullionBar position={[0, 0, z]} size={[0.005, FACE_H, 0.007]} />
-      {hPositions.map((y) => (
-        <MullionBar key={y} position={[0, y, z]} size={[FACE_W, 0.005, 0.007]} />
-      ))}
+      <HorizontalGrid z={z} />
+      <MullionBar position={[vertX, 0, z]} size={[0.0045, GLASS_H, 0.006]} />
     </group>
+  );
+}
+
+function FrostedGlass() {
+  return (
+    <meshPhysicalMaterial
+      color="#EDE0CC"
+      metalness={0.04}
+      roughness={0.44}
+      transmission={0.08}
+      thickness={0.016}
+      transparent
+      opacity={0.96}
+      envMapIntensity={0.35}
+      clearcoat={0.18}
+      clearcoatRoughness={0.22}
+      attenuationColor="#E8D4B8"
+      attenuationDistance={4}
+      depthWrite
+    />
   );
 }
 
@@ -112,7 +149,9 @@ function DoorPanel({
   const hingeX = side === "left" ? -(PANEL_W + GAP / 2) : PANEL_W + GAP / 2;
   const panelCenterX = side === "left" ? PANEL_W / 2 : -PANEL_W / 2;
   const openDir = side === "left" ? -1 : 1;
-  const faceZ = PANEL_D / 2 + 0.002;
+  const faceZ = PANEL_D / 2 + 0.004;
+  const halfW = PANEL_W / 2;
+  const halfH = PANEL_H / 2;
 
   useFrame((_, delta) => {
     if (!pivotRef.current) return;
@@ -131,25 +170,50 @@ function DoorPanel({
     <group position={[hingeX, 0, 0]}>
       <group ref={pivotRef}>
         <group position={[panelCenterX, 0, 0]} renderOrder={1}>
-          <mesh renderOrder={1}>
-            <boxGeometry args={[PANEL_W, PANEL_H, PANEL_D]} />
-            <SatinGoldMat />
+          {/* Dark inner frame recess */}
+          <mesh position={[0, 0, -0.002]} renderOrder={0}>
+            <boxGeometry args={[PANEL_W + 0.008, PANEL_H + 0.008, PANEL_D + 0.006]} />
+            <meshPhysicalMaterial color={FRAME_DARK} metalness={0.35} roughness={0.55} envMapIntensity={0.12} />
           </mesh>
 
-          <mesh position={[0, 0, faceZ]}>
-            <boxGeometry args={[FACE_W, FACE_H, 0.003]} />
-            <SatinGoldMat color={CHAMPAGNE_LIGHT} />
+          {/* Gold perimeter frame */}
+          <mesh position={[0, halfH - FRAME_Y / 2, 0]}>
+            <boxGeometry args={[PANEL_W, FRAME_Y, PANEL_D]} />
+            <GoldMat />
+          </mesh>
+          <mesh position={[0, -halfH + FRAME_Y / 2, 0]}>
+            <boxGeometry args={[PANEL_W, FRAME_Y, PANEL_D]} />
+            <GoldMat />
+          </mesh>
+          <mesh position={[-halfW + FRAME_X / 2, 0, 0]}>
+            <boxGeometry args={[FRAME_X, PANEL_H - FRAME_Y * 2, PANEL_D]} />
+            <GoldMat />
+          </mesh>
+          <mesh position={[halfW - FRAME_X / 2, 0, 0]}>
+            <boxGeometry args={[FRAME_X, PANEL_H - FRAME_Y * 2, PANEL_D]} />
+            <GoldMat />
           </mesh>
 
-          <DoorGrid z={faceZ + 0.005} />
-          <TBarHandle side={side} />
+          {/* Frosted glass inset */}
+          <mesh position={[0, 0, faceZ - 0.001]} renderOrder={1}>
+            <boxGeometry args={[GLASS_W, GLASS_H, 0.012]} />
+            <FrostedGlass />
+          </mesh>
+
+          {/* Warm inner glow — matches backlit frosted look */}
+          <mesh position={[0, 0, faceZ - 0.004]} renderOrder={0}>
+            <boxGeometry args={[GLASS_W * 0.96, GLASS_H * 0.96, 0.004]} />
+            <meshBasicMaterial color="#FFF4E6" transparent opacity={0.35} depthWrite={false} />
+          </mesh>
+
+          <DoorLeafGrid z={faceZ + 0.006} side={side} />
+          <VerticalHandle side={side} />
         </group>
       </group>
     </group>
   );
 }
 
-/** Only the two swinging door leaves — door_bg.png provides walls, frame, and decor. */
 export default function GlassDoors({ progressRef, animRef }: GlassDoorsProps) {
   const leftTargetRef = useRef(0);
   const rightTargetRef = useRef(0);
@@ -162,7 +226,7 @@ export default function GlassDoors({ progressRef, animRef }: GlassDoorsProps) {
   });
 
   return (
-    <group position={[0, -0.01, 0]}>
+    <group position={[0, DOOR_VIEW.offsetY, DOOR_VIEW.offsetZ]}>
       <DoorPanel side="left" targetAngleRef={leftTargetRef} animRef={animRef} />
       <DoorPanel side="right" targetAngleRef={rightTargetRef} animRef={animRef} />
     </group>

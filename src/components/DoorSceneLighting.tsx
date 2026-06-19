@@ -11,6 +11,7 @@ export default function DoorSceneLighting({ brightness = 0 }: { brightness?: num
       <directionalLight position={[0, 6, 5]} intensity={0.82 + b * 0.45} color="#FFF8F2" />
       <directionalLight position={[-3.5, 2.5, 4]} intensity={0.28 + b * 0.18} color="#F0E0D4" />
       <directionalLight position={[3.5, 2.5, 4]} intensity={0.28 + b * 0.18} color="#F0E0D4" />
+      <pointLight position={[0, 0.4, -0.6]} intensity={0.55 + b * 0.2} color="#FFF0DC" distance={6} decay={2} />
       <pointLight position={[0, 1.8, 2.5]} intensity={0.45 + b * 0.22} color="#F8EDE4" distance={10} decay={2} />
     </>
   );

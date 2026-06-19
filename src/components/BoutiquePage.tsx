@@ -1,16 +1,7 @@
 "use client";
 
 import { Component, type ReactNode } from "react";
-import dynamic from "next/dynamic";
-
-const BoutiqueExperience = dynamic(() => import("./BoutiqueExperience"), {
-  ssr: false,
-  loading: () => (
-    <div className="boutique-home flex items-center justify-center bg-maj-cream">
-      <p className="font-sans text-[10px] uppercase tracking-[0.4em] text-maj-gold/80">MAJ Boutique</p>
-    </div>
-  ),
-});
+import BoutiqueExperience from "./BoutiqueExperience";
 
 class BoutiquePageBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };

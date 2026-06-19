@@ -26,7 +26,7 @@ function DoorSceneContent({
       <CinematicCamera progressRef={progressRef} />
       <GlassDoors progressRef={progressRef} animRef={animRef} />
       <Suspense fallback={null}>
-        <BoutiqueEnvironment variant="lobby" environmentIntensity={0.85} />
+        <BoutiqueEnvironment variant="lobby" environmentIntensity={1.05} />
         <DoorSceneLighting brightness={brightness} />
       </Suspense>
     </>
@@ -65,7 +65,7 @@ export default function DoorSceneCanvas({
             powerPreference: "high-performance",
           }}
           style={{ width: "100%", height: "100%" }}
-          onCreated={({ gl }) => configureRenderer(gl, { exposure: isSafari() ? 1.1 : 1.16 })}
+          onCreated={({ gl }) => configureRenderer(gl, { exposure: isSafari() ? 1.12 : 1.18 })}
         >
           <LoadingBridge />
           <DoorSceneContent progressRef={progressRef} animRef={animRef} brightness={brightness} />

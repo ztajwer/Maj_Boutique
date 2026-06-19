@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${siteConfig.url}/doors`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.88,
+    },
+    {
       url: `${siteConfig.url}/shop`,
       lastModified: new Date(),
       changeFrequency: "weekly",

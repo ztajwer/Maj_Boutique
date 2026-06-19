@@ -13,15 +13,13 @@ export const DOOR_OPENING = {
 } as const;
 
 export const DOOR_VIEW = {
-  panelW: 1.42,
-  panelH: 2.96,
-  gap: 0.014,
-  offsetY: -0.062,
+  panelW: 1.43,
+  panelH: 2.97,
+  gap: 0.013,
+  offsetY: -0.06,
   offsetZ: 0.002,
-  /** Visible height fraction the door leaves should occupy */
-  heightFraction: 0.628,
-  /** Visible width fraction for both leaves + gap */
-  widthFraction: 0.462,
+  heightFraction: 0.63,
+  widthFraction: 0.464,
   fov: 40,
   distancePad: 1.0,
 } as const;

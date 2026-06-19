@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BoutiquePage from "@/components/BoutiquePage";
+import HomeSeoContent from "@/components/HomeSeoContent";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = buildPageMetadata({
 export default function Home() {
   return (
     <main className="boutique-home">
+      <HomeSeoContent />
       <BoutiquePage />
     </main>
   );

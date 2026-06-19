@@ -162,9 +162,9 @@ export function buildPageMetadata({
       description,
       images: [
         {
-          url: "/logo.png",
-          width: 1200,
-          height: 630,
+          url: "/door_bg.png",
+          width: 1536,
+          height: 1024,
           alt: title,
         },
       ],
@@ -173,7 +173,7 @@ export function buildPageMetadata({
       card: "summary_large_image" as const,
       title,
       description,
-      images: ["/logo.png"],
+      images: ["/door_bg.png"],
     },
     robots: {
       index: true,

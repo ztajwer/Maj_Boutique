@@ -1,6 +1,12 @@
 import { PRODUCT_PATHS } from "@/data/products";
 
-const IMAGE_URLS = ["/wh_logo.jpeg", "/background.png", "/door_bg.png", "/logo.png", "/star.png"] as const;
+const IMAGE_URLS = [
+  "/bg.png",
+  "/logo.png",
+  "/door_bg.png",
+  "/background.png",
+  "/star.png",
+] as const;
 
 let booted = false;
 let productsPreloadStarted = false;
@@ -37,7 +43,7 @@ function preloadGltf(path: string) {
   });
 }
 
-/** Fast images + code chunks first — never block the UI timer. */
+/** Parallel boot — runs on page load while loader plays (never blocks the 3s timer). */
 export function bootCriticalAssets() {
   if (typeof window === "undefined" || booted) return;
   booted = true;
@@ -50,8 +56,8 @@ export function bootCriticalAssets() {
   });
 
   void import("@/components/DoorSceneCanvas");
-  void import("@/components/jewelry/JewelryHome");
   void import("@/components/jewelry/ShopExperience");
+  void import("@/components/jewelry/JewelryHome");
   void import("@/components/jewelry/TableProducts");
 
   void import("@/lib/boutiqueAudio").then(({ preloadBoutiqueAudio }) => {
@@ -62,7 +68,12 @@ export function bootCriticalAssets() {
     void warmFetch("/table-3d.glb");
     preloadGltf("/table-3d.glb");
     preloadProductAssets();
-  }, 50);
+  }, 40);
+}
+
+export function bootAfterLoader() {
+  preloadTableAsset();
+  prefetchShopChunk();
 }
 
 export function waitForTableReady(): Promise<void> {
@@ -82,7 +93,7 @@ export function preloadProductAssets() {
     window.setTimeout(() => {
       void warmFetch(path);
       preloadGltf(path);
-    }, index * 80);
+    }, index * 60);
   });
 }
 
@@ -93,6 +104,7 @@ export function startDoorTransitionPreload() {
 
 export function startShopPreload() {
   prefetchShopChunk();
+  preloadTableAsset();
 }
 
 export function prefetchShopChunk() {

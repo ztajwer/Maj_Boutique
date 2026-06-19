@@ -629,24 +629,6 @@ body:has(.product-detail-shell) {
 }
 
 
-/* Loader — bright, white logo */
-.loader-screen--bright {
-  background-color: #ffffff;
-  background-image: linear-gradient(
-    165deg,
-    #ffffff 0%,
-    #fdfbf8 42%,
-    #f8f4ef 100%
-  );
-}
-
-.loader-logo-white {
-  filter:
-    brightness(0)
-    invert(1)
-    drop-shadow(0 4px 20px rgba(180, 140, 80, 0.18));
-}
-
 /* Loader — vertically centered, left-aligned stack */
 .loader-screen--fast {
   background-color: #faf6f1;
@@ -704,12 +686,15 @@ body:has(.product-detail-shell) {
   height: 50px;
   object-fit: contain;
   backface-visibility: hidden;
-  mix-blend-mode: multiply;
-  opacity: 0.55;
+  mix-blend-mode: screen;
   filter:
-    brightness(0.85)
-    contrast(1.05)
-    drop-shadow(0 0 6px rgba(180, 150, 100, 0.35));
+    brightness(1.28)
+    contrast(1.18)
+    saturate(1.12)
+    drop-shadow(0 0 2px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 18px rgba(236, 240, 255, 0.9))
+    drop-shadow(0 0 32px rgba(212, 220, 235, 0.7));
 }
 
 @keyframes loaderStarFrontFlip {

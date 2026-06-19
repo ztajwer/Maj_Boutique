@@ -8,6 +8,7 @@ import { useDoorGestures } from "@/hooks/useDoorGestures";
 import { useDoorScreenState } from "@/hooks/useDoorScreenState";
 import { startBoutiqueAudioFromGesture, stopBoutiqueAudio } from "@/lib/boutiqueAudio";
 import {
+  bootAfterLoader,
   bootCriticalAssets,
   prefetchShopChunk,
   startDoorTransitionPreload,
@@ -30,8 +31,13 @@ const ShopExperience = dynamic(() => import("./jewelry/ShopExperience"), {
   loading: () => null,
 });
 
-function BoutiqueExperienceInner() {
-  const [ready, setReady] = useState(false);
+interface BoutiqueExperienceProps {
+  /** Skip the 3s loader — used on /doors direct entry */
+  skipLoader?: boolean;
+}
+
+function BoutiqueExperienceInner({ skipLoader = false }: BoutiqueExperienceProps) {
+  const [ready, setReady] = useState(skipLoader);
   const [inviteDismissed, setInviteDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -46,11 +52,21 @@ function BoutiqueExperienceInner() {
     engage,
   } = useDoorScreenState(ready);
 
-  const handleLoadComplete = useCallback(() => {
+  const activateExperience = useCallback(() => {
     bootCriticalAssets();
+    bootAfterLoader();
     doorEngine.setReady(true);
     setReady(true);
   }, []);
+
+  useEffect(() => {
+    if (!skipLoader) return;
+    activateExperience();
+  }, [skipLoader, activateExperience]);
+
+  const handleLoadComplete = useCallback(() => {
+    activateExperience();
+  }, [activateExperience]);
 
   const onDoorEngaged = useCallback((kick: number) => {
     startBoutiqueAudioFromGesture(kick);
@@ -103,7 +119,7 @@ function BoutiqueExperienceInner() {
 
   return (
     <div className="relative h-full w-full bg-maj-cream">
-      <Loader onComplete={handleLoadComplete} />
+      {!skipLoader && <Loader onComplete={handleLoadComplete} />}
 
       {ready && (entered || doorProgress > 0.03) && (
         <div
@@ -171,10 +187,10 @@ function BoutiqueExperienceInner() {
   );
 }
 
-export default function BoutiqueExperience() {
+export default function BoutiqueExperience(props: BoutiqueExperienceProps) {
   return (
     <LoadingProvider>
-      <BoutiqueExperienceInner />
+      <BoutiqueExperienceInner {...props} />
     </LoadingProvider>
   );
 }

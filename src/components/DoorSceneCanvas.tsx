@@ -62,6 +62,7 @@ export default function DoorSceneCanvas({
           gl={{
             antialias: !isSafari(),
             alpha: true,
+            premultipliedAlpha: false,
             powerPreference: "high-performance",
           }}
           style={{ width: "100%", height: "100%" }}

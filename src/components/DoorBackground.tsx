@@ -5,7 +5,8 @@ interface DoorBackgroundProps {
 }
 
 export default function DoorBackground({ fadeProgress = 0 }: DoorBackgroundProps) {
-  const opacity = Math.max(0, 1 - fadeProgress * 1.08);
+  const doorFrameOpacity = Math.max(0, 0.92 - fadeProgress * 1.35);
+  const vignetteOpacity = Math.max(0, 0.22 - fadeProgress * 0.28);
 
   return (
     <>
@@ -13,17 +14,17 @@ export default function DoorBackground({ fadeProgress = 0 }: DoorBackgroundProps
         className="pointer-events-none fixed inset-0 z-[2] bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url(/door_bg.png)",
-          opacity,
-          transition: "opacity 0.5s ease-out",
+          opacity: doorFrameOpacity,
+          transition: "opacity 0.4s ease-out",
         }}
         aria-hidden
       />
       <div
         className="pointer-events-none fixed inset-0 z-[3]"
         style={{
-          opacity: opacity * 0.38,
+          opacity: vignetteOpacity,
           background:
-            "radial-gradient(ellipse 78% 72% at 50% 48%, transparent 38%, rgba(26,20,16,0.28) 100%)",
+            "radial-gradient(ellipse 80% 74% at 50% 48%, transparent 44%, rgba(110,82,62,0.16) 100%)",
         }}
         aria-hidden
       />

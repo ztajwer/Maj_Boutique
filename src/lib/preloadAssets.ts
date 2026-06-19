@@ -44,6 +44,10 @@ export function bootCriticalAssets() {
 
   IMAGE_URLS.forEach((url) => void warmFetch(url));
 
+  void getDrei().then(({ useTexture }) => {
+    useTexture.preload("/background.png");
+  });
+
   void import("@/components/DoorSceneCanvas");
   void import("@/components/jewelry/JewelryHome");
   void import("@/components/jewelry/ShopExperience");

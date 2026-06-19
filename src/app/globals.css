@@ -629,19 +629,75 @@ body:has(.product-detail-shell) {
 }
 
 
-/* Loader — bright luxury with white logo on gold medallion */
+/* ─── Loader: bright premium, centered, white wordmark ─── */
 .loader-screen--bright {
-  background-color: #fffdfb;
-  background-image: linear-gradient(
-    165deg,
-    #ffffff 0%,
-    #fdf8f2 45%,
-    #f6efe6 100%
-  );
+  background-color: #fffcfa;
+  background-image:
+    radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 255, 255, 0.95) 0%, transparent 70%),
+    linear-gradient(168deg, #ffffff 0%, #fdf9f4 48%, #f5ede4 100%);
 }
 
-.loader-logo-medallion {
-  background: linear-gradient(145deg, #f0ddb8 0%, #d4b078 48%, #c49a5e 100%);
+.loader-panel {
+  animation: loaderFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.loader-logo-disc {
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: radial-gradient(circle at 32% 26%, #f0ddb4 0%, #d9b47a 38%, #b8894a 72%, #9a7340 100%);
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.22),
+    0 8px 48px rgba(180, 140, 80, 0.28),
+    inset 0 2px 24px rgba(255, 255, 255, 0.22);
+}
+
+.loader-logo-glow {
+  inset: -12%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, transparent 68%);
+  filter: blur(12px);
+}
+
+.loader-brand-maj {
+  font-size: clamp(2.1rem, 7vw, 3.5rem);
+  letter-spacing: 0.34em;
+  margin-right: -0.34em;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow:
+    0 2px 18px rgba(255, 255, 255, 0.35),
+    0 1px 3px rgba(80, 60, 30, 0.12);
+}
+
+.loader-brand-sub {
+  margin-top: 0.55rem;
+  font-size: clamp(0.52rem, 1.8vw, 0.65rem);
+  letter-spacing: 0.52em;
+  margin-right: -0.52em;
+  color: rgba(255, 255, 255, 0.94);
+  text-transform: uppercase;
+  font-weight: 500;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.2);
+}
+
+.loader-logo-size {
+  width: clamp(10.5rem, min(48vw, 38vh), 20rem);
+  height: clamp(10.5rem, min(48vw, 38vh), 20rem);
+  aspect-ratio: 1;
+}
+
+.loader-logo-wrap {
+  margin-bottom: 0;
+}
+
+@keyframes loaderFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .loader-shell--center {
@@ -667,15 +723,6 @@ body:has(.product-detail-shell) {
   align-items: flex-start;
   width: 100%;
   max-width: 36rem;
-}
-
-.loader-logo-wrap {
-  margin-bottom: clamp(1.75rem, 4vh, 2.75rem);
-}
-
-.loader-logo-size {
-  width: clamp(11rem, min(52vw, 40vh), 22rem);
-  height: clamp(11rem, min(52vw, 40vh), 22rem);
 }
 
 /* Loader — dark cinematic variant (optional) */
@@ -714,17 +761,16 @@ body:has(.product-detail-shell) {
 
 .loader-star-sprite {
   display: block;
-  width: 50px;
-  height: 50px;
+  width: clamp(32px, 8vw, 50px);
+  height: clamp(32px, 8vw, 50px);
   object-fit: contain;
   backface-visibility: hidden;
   mix-blend-mode: multiply;
-  opacity: 0.65;
+  opacity: 0.55;
   filter:
-    brightness(0.9)
-    saturate(1.15)
-    drop-shadow(0 0 8px rgba(212, 175, 55, 0.5))
-    drop-shadow(0 0 16px rgba(212, 175, 55, 0.3));
+    brightness(0.92)
+    saturate(1.2)
+    drop-shadow(0 0 6px rgba(212, 175, 55, 0.45));
 }
 
 @keyframes loaderStarFrontFlip {
@@ -873,6 +919,7 @@ canvas {
   width: 100vw;
   height: 100vh;
   height: 100dvh;
+  min-height: 100svh;
   overflow: hidden;
   background: var(--maj-cream);
 }

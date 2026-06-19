@@ -3,7 +3,7 @@
 import { useRef, type MutableRefObject } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { DOOR_VIEW } from "@/lib/doorAlignment";
+import { DOOR_VIEW, doorOffsetY } from "@/lib/doorAlignment";
 
 interface GlassDoorsProps {
   progressRef: MutableRefObject<number>;
@@ -21,8 +21,8 @@ const GAP = DOOR_VIEW.gap;
 const CHAMPAGNE_BRIGHT = "#EDD9B0";
 const MULLION = "#D4B87A";
 
-const GLASS_W = PANEL_W - 0.184;
-const GLASS_H = PANEL_H - 0.216;
+const GLASS_W = PANEL_W - 0.18;
+const GLASS_H = PANEL_H - 0.21;
 
 function MullionBar({
   position,
@@ -152,16 +152,20 @@ function DoorPanel({
 export default function GlassDoors({ progressRef, animRef }: GlassDoorsProps) {
   const leftTargetRef = useRef(0);
   const rightTargetRef = useRef(0);
+  const groupRef = useRef<THREE.Group>(null);
 
-  useFrame(() => {
+  useFrame((state) => {
     const p = progressRef.current;
     leftTargetRef.current = p * MAX_OPEN;
     const delayed = Math.max(0, (p - 0.06) / 0.94);
     rightTargetRef.current = delayed * MAX_OPEN;
+    if (groupRef.current) {
+      groupRef.current.position.y = doorOffsetY(state.size.width / state.size.height);
+    }
   });
 
   return (
-    <group position={[0, DOOR_VIEW.offsetY, DOOR_VIEW.offsetZ]}>
+    <group ref={groupRef} position={[0, DOOR_VIEW.offsetY, DOOR_VIEW.offsetZ]}>
       <DoorPanel side="left" targetAngleRef={leftTargetRef} animRef={animRef} />
       <DoorPanel side="right" targetAngleRef={rightTargetRef} animRef={animRef} />
     </group>

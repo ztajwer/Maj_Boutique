@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, type MutableRefObject } from "react";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { DOOR_VIEW } from "@/lib/doorAlignment";
+import { DOOR_VIEW, doorOffsetY } from "@/lib/doorAlignment";
 
 const FOV = DOOR_VIEW.fov;
 
@@ -34,11 +34,12 @@ export default function CinematicCamera({ progressRef }: CinematicCameraProps) {
       (totalDoorW / (DOOR_VIEW.widthFraction * 2 * tanHalf * aspect)) * DOOR_VIEW.distancePad;
     const distance = Math.max(distForHeight, distForWidth);
 
+    const lookY = doorOffsetY(aspect) * 0.15;
     baseDistanceRef.current = distance;
     cam.fov = FOV;
-    cam.position.set(0, DOOR_VIEW.offsetY * 0.15, distance);
+    cam.position.set(0, lookY, distance);
     cam.rotation.set(0, 0, 0);
-    cam.lookAt(0, DOOR_VIEW.offsetY * 0.15, 0);
+    cam.lookAt(0, lookY, 0);
     cam.near = 0.1;
     cam.far = 50;
     cam.updateProjectionMatrix();
@@ -48,7 +49,8 @@ export default function CinematicCamera({ progressRef }: CinematicCameraProps) {
     const cam = cameraRef.current;
     if (!cam) return;
     const p = progressRef.current;
-    const lookY = DOOR_VIEW.offsetY * 0.15;
+    const aspect = size.width / size.height;
+    const lookY = doorOffsetY(aspect) * 0.15;
     cam.position.z = baseDistanceRef.current - p * 0.32;
     cam.position.y = lookY + p * 0.045;
     cam.lookAt(0, lookY + p * 0.02, 0);

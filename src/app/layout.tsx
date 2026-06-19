@@ -5,7 +5,7 @@ import SeoJsonLd from "@/components/SeoJsonLd";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
-const CRITICAL_IMAGE_URLS = ["/wh_logo.jpeg", "/door_bg.png", "/logo.png", "/star.png"];
+const CRITICAL_IMAGE_URLS = ["/logo.png", "/door_bg.png", "/star.png"];
 const DEFERRED_IMAGE_URLS = ["/background.png", "/bg.png"];
 
 const cormorant = Cormorant_Garamond({
@@ -98,9 +98,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preload" href="/wh_logo.jpeg" as="image" fetchPriority="high" />
-        <link rel="preload" href="/door_bg.png" as="image" type="image/png" fetchPriority="high" />
-        <link rel="preload" href="/logo.png" as="image" type="image/png" />
+        <link rel="preload" href="/logo.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/star.png" as="image" type="image/png" />
         <link rel="preload" href="/door-chime.mp3" as="fetch" crossOrigin="anonymous" />
         <script

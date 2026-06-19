@@ -15,7 +15,7 @@ export function createDoorAnimState(): DoorAnimState {
   return { phase: "waiting", startTimeMs: 0, startProgress: 0 };
 }
 
-function openDurationMs(_startProgress: number) {
+function openDurationMs() {
   return DOOR_OPEN_DURATION_S * 1000;
 }
 
@@ -29,7 +29,7 @@ export function tickDoorAnimation(
 
   if (anim.startTimeMs === 0) anim.startTimeMs = nowMs;
 
-  const durationMs = openDurationMs(anim.startProgress);
+  const durationMs = openDurationMs();
   const linearT = Math.min(1, Math.max(0, (nowMs - anim.startTimeMs) / durationMs));
   const eased = easeLuxuryOpen(linearT);
   const progress = anim.startProgress + (1 - anim.startProgress) * eased;

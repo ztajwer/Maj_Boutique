@@ -26,7 +26,7 @@ function DoorSceneContent({
       <CinematicCamera progressRef={progressRef} />
       <GlassDoors progressRef={progressRef} animRef={animRef} />
       <Suspense fallback={null}>
-        <BoutiqueEnvironment variant="lobby" environmentIntensity={0.38} />
+        <BoutiqueEnvironment variant="lobby" environmentIntensity={0.42} />
         <DoorSceneLighting brightness={brightness} />
       </Suspense>
     </>

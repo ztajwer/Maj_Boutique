@@ -1,6 +1,6 @@
 import { PRODUCT_PATHS } from "@/data/products";
 
-const CRITICAL_IMAGES = ["/wh_logo.jpeg", "/door_bg.png", "/logo.png", "/star.png"] as const;
+const CRITICAL_IMAGES = ["/logo.png", "/door_bg.png", "/star.png"] as const;
 const DEFERRED_IMAGES = ["/background.png", "/bg.png"] as const;
 
 let booted = false;

@@ -23,6 +23,8 @@ import BoutiqueEnvironment from "../BoutiqueEnvironment";
 
 const TableProducts = lazy(() => import("./TableProducts"));
 
+useGLTF.preload("/table-3d.glb");
+
 const TABLE_SHADE = new THREE.Color("#C9A27D");
 const TABLE_LIGHTEN = new THREE.Color("#E8D2B4");
 

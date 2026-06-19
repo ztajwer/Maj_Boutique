@@ -19,7 +19,6 @@ const MAX_OPEN = Math.PI * 0.44;
 const GAP = DOOR_VIEW.gap;
 
 const CHAMPAGNE = "#C9A06A";
-const CHAMPAGNE_LIGHT = "#DFC898";
 const CHAMPAGNE_BRIGHT = "#EDD9B0";
 const MULLION = "#D4B87A";
 const FRAME_DARK = "#2C2620";

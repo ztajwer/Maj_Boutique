@@ -9,143 +9,104 @@ interface GlassDoorsProps {
   animRef?: MutableRefObject<{ phase: string }>;
 }
 
-export const PANEL_W = 1.2;
-export const PANEL_H = 2.72;
-export const DOOR_ASSEMBLY_H = PANEL_H + 0.2;
-const PANEL_D = 0.052;
+/** Sized to align with door_bg.png framing in CinematicCamera. */
+export const PANEL_W = 1.18;
+export const PANEL_H = 2.78;
+export const DOOR_ASSEMBLY_H = PANEL_H + 0.24;
+const PANEL_D = 0.048;
 const MAX_OPEN = Math.PI * 0.44;
-const HANDLE_Y = -0.04;
-const HANDLE_X = PANEL_W * 0.36;
+const GAP = 0.014;
 
-const INSET_X = 0.1;
-const INSET_Y = 0.12;
-const GLASS_W = PANEL_W - INSET_X * 2;
-const GLASS_H = PANEL_H - INSET_Y * 2;
+/** Champagne rose-gold satin — matched to door_bg.png */
+const CHAMPAGNE = "#D4B48A";
+const CHAMPAGNE_LIGHT = "#E2C9A4";
+const CHAMPAGNE_SOFT = "#C9A67E";
+const MULLION = "#DBC49E";
+const FRAME_DARK = "#1A1410";
 
-const ROSE_GOLD = "#C9957A";
-const ROSE_GOLD_LIGHT = "#E8C4B0";
-const ROSE_GOLD_DEEP = "#A87462";
-const ROSE_GOLD_BRIGHT = "#F2D4C4";
-const ROSE_PEARL = "#EDD5CA";
-const ROSE_GLASS_TINT = "#FFF6F2";
+const INSET_X = 0.09;
+const INSET_Y = 0.11;
+const FACE_W = PANEL_W - INSET_X * 2;
+const FACE_H = PANEL_H - INSET_Y * 2;
 
-function RoseGoldMetal({
-  roughness = 0.16,
-  color = ROSE_GOLD,
-  envIntensity = 2.1,
+function ChampagneMat({
+  color = CHAMPAGNE,
+  roughness = 0.42,
+  envIntensity = 0.72,
 }: {
-  roughness?: number;
   color?: string;
+  roughness?: number;
   envIntensity?: number;
 }) {
   return (
     <meshPhysicalMaterial
       color={color}
-      metalness={1}
+      metalness={0.86}
       roughness={roughness}
       envMapIntensity={envIntensity}
-      clearcoat={0.92}
-      clearcoatRoughness={0.04}
-      reflectivity={1}
-      sheen={0.22}
-      sheenRoughness={0.25}
-      sheenColor={ROSE_GOLD_LIGHT}
+      clearcoat={0.22}
+      clearcoatRoughness={0.18}
+      reflectivity={0.55}
     />
   );
 }
 
-function RoseGlass() {
+function DarkFrameMat() {
   return (
     <meshPhysicalMaterial
-      color={ROSE_GLASS_TINT}
-      metalness={0.02}
-      roughness={0.015}
-      transmission={1}
-      thickness={0.65}
-      ior={1.52}
-      envMapIntensity={1.85}
-      transparent
-      opacity={1}
-      side={THREE.DoubleSide}
-      reflectivity={0.95}
-      attenuationColor="#E8A898"
-      attenuationDistance={0.42}
-      clearcoat={0.35}
-      clearcoatRoughness={0.03}
+      color={FRAME_DARK}
+      metalness={0.45}
+      roughness={0.62}
+      envMapIntensity={0.18}
     />
   );
 }
 
-function RosePearlBacking() {
+function MullionBar({
+  position,
+  size,
+}: {
+  position: [number, number, number];
+  size: [number, number, number];
+}) {
   return (
-    <meshPhysicalMaterial
-      color={ROSE_PEARL}
-      metalness={0.28}
-      roughness={0.38}
-      envMapIntensity={0.95}
-      clearcoat={0.55}
-      clearcoatRoughness={0.12}
-      reflectivity={0.65}
-      sheen={0.4}
-      sheenRoughness={0.35}
-      sheenColor={ROSE_GOLD_BRIGHT}
-    />
+    <mesh position={position}>
+      <boxGeometry args={size} />
+      <ChampagneMat color={MULLION} roughness={0.34} envIntensity={0.65} />
+    </mesh>
   );
 }
 
-function DoorHandle({ side }: { side: "left" | "right" }) {
-  const x = side === "left" ? HANDLE_X : -HANDLE_X;
+/** Horizontal T-bar handle at the meeting stile — like door_bg.png */
+function TBarHandle({ side }: { side: "left" | "right" }) {
+  const meetX = side === "left" ? PANEL_W / 2 - 0.055 : -PANEL_W / 2 + 0.055;
+  const barShift = side === "left" ? 0.045 : -0.045;
+  const z = PANEL_D / 2 + 0.011;
 
   return (
-    <group position={[x, HANDLE_Y, PANEL_D / 2 + 0.045]}>
-      <mesh position={[0, 0, -0.01]}>
-        <boxGeometry args={[0.055, 0.24, 0.014]} />
-        <RoseGoldMetal roughness={0.12} color={ROSE_GOLD_DEEP} />
+    <group position={[meetX, -0.015, z]}>
+      <mesh position={[barShift, 0, 0]}>
+        <boxGeometry args={[0.11, 0.014, 0.016]} />
+        <ChampagneMat color={CHAMPAGNE_LIGHT} roughness={0.32} />
       </mesh>
-      <mesh rotation={[0, 0, Math.PI / 2]} position={[0, 0, 0.055]}>
-        <cylinderGeometry args={[0.011, 0.011, 0.19, 28]} />
-        <RoseGoldMetal roughness={0.08} color={ROSE_GOLD_BRIGHT} />
-      </mesh>
-      {[-0.08, 0.08].map((offset) => (
-        <mesh key={offset} position={[0, offset, 0.024]}>
-          <cylinderGeometry args={[0.0075, 0.0075, 0.05, 16]} />
-          <RoseGoldMetal roughness={0.1} />
-        </mesh>
-      ))}
-      <mesh position={[0, 0, 0.038]}>
-        <sphereGeometry args={[0.016, 20, 20]} />
-        <meshPhysicalMaterial
-          color="#FFF8F5"
-          metalness={0}
-          roughness={0.02}
-          transmission={0.88}
-          thickness={0.2}
-          ior={1.55}
-          envMapIntensity={1.4}
-          clearcoat={1}
-          clearcoatRoughness={0.02}
-        />
+      <mesh>
+        <boxGeometry args={[0.013, 0.055, 0.014]} />
+        <ChampagneMat color={CHAMPAGNE_LIGHT} roughness={0.32} />
       </mesh>
     </group>
   );
 }
 
-function FrameMolding({
-  position,
-  size,
-  roughness = 0.14,
-  color = ROSE_GOLD,
-}: {
-  position: [number, number, number];
-  size: [number, number, number];
-  roughness?: number;
-  color?: string;
-}) {
+function DoorGrid({ z }: { z: number }) {
+  const hPositions = [FACE_H * 0.28, -FACE_H * 0.28];
+
   return (
-    <mesh position={position}>
-      <boxGeometry args={size} />
-      <RoseGoldMetal roughness={roughness} color={color} />
-    </mesh>
+    <group>
+      <MullionBar position={[0, 0, z]} size={[0.007, FACE_H, 0.009]} />
+      {hPositions.map((y) => (
+        <MullionBar key={y} position={[0, y, z]} size={[FACE_W, 0.007, 0.009]} />
+      ))}
+    </group>
   );
 }
 
@@ -161,10 +122,10 @@ function DoorPanel({
   const pivotRef = useRef<THREE.Group>(null);
   const angle = useRef(0);
 
-  const hingeX = side === "left" ? -PANEL_W : PANEL_W;
+  const hingeX = side === "left" ? -(PANEL_W + GAP / 2) : PANEL_W + GAP / 2;
   const panelCenterX = side === "left" ? PANEL_W / 2 : -PANEL_W / 2;
   const openDir = side === "left" ? -1 : 1;
-  const hingeEdgeX = side === "left" ? -PANEL_W / 2 : PANEL_W / 2;
+  const faceZ = PANEL_D / 2 + 0.003;
 
   useFrame((_, delta) => {
     if (!pivotRef.current) return;
@@ -179,107 +140,32 @@ function DoorPanel({
     pivotRef.current.rotation.y = angle.current;
   });
 
-  const zFace = PANEL_D / 2;
-
   return (
     <group position={[hingeX, 0, 0]}>
       <group ref={pivotRef}>
         <group position={[panelCenterX, 0, 0]}>
-          {/* Outer door body */}
+          {/* Dark recessed outer frame */}
+          <mesh position={[0, 0, -0.004]}>
+            <boxGeometry args={[PANEL_W + 0.02, PANEL_H + 0.02, PANEL_D + 0.008]} />
+            <DarkFrameMat />
+          </mesh>
+
+          {/* Champagne door leaf */}
           <mesh>
             <boxGeometry args={[PANEL_W, PANEL_H, PANEL_D]} />
-            <RoseGoldMetal roughness={0.2} color={ROSE_GOLD_DEEP} />
+            <ChampagneMat />
           </mesh>
 
-          {/* Stepped frame profile */}
-          <FrameMolding
-            position={[0, PANEL_H / 2 - 0.045, zFace + 0.004]}
-            size={[PANEL_W - 0.04, 0.09, 0.012]}
-            color={ROSE_GOLD_LIGHT}
-            roughness={0.1}
-          />
-          <FrameMolding
-            position={[0, -PANEL_H / 2 + 0.05, zFace + 0.004]}
-            size={[PANEL_W - 0.04, 0.07, 0.014]}
-            roughness={0.09}
-          />
-          <FrameMolding
-            position={[-PANEL_W / 2 + 0.05, 0, zFace + 0.004]}
-            size={[0.08, PANEL_H - 0.14, 0.012]}
-            color={ROSE_GOLD_LIGHT}
-            roughness={0.11}
-          />
-          <FrameMolding
-            position={[PANEL_W / 2 - 0.05, 0, zFace + 0.004]}
-            size={[0.08, PANEL_H - 0.14, 0.012]}
-            color={ROSE_GOLD_LIGHT}
-            roughness={0.11}
-          />
-
-          {/* Inner frame lip */}
-          <FrameMolding
-            position={[0, 0, zFace + 0.001]}
-            size={[PANEL_W - 0.06, PANEL_H - 0.08, 0.006]}
-            roughness={0.13}
-            color={ROSE_GOLD}
-          />
-
-          {/* Opaque pearl backing — blocks interior see-through & shadow bleed */}
-          <mesh position={[0, 0, -zFace + 0.018]} renderOrder={1}>
-            <boxGeometry args={[GLASS_W, GLASS_H, 0.012]} />
-            <RosePearlBacking />
+          {/* Inner satin face — slightly lighter */}
+          <mesh position={[0, 0, faceZ - 0.006]}>
+            <boxGeometry args={[FACE_W, FACE_H, 0.004]} />
+            <ChampagneMat color={CHAMPAGNE_LIGHT} roughness={0.38} />
           </mesh>
 
-          {/* Crystal rose-tinted glass */}
-          <mesh position={[0, 0, zFace - 0.008]} renderOrder={2}>
-            <boxGeometry args={[GLASS_W, GLASS_H, 0.018]} />
-            <RoseGlass />
-          </mesh>
+          {/* Raised grid — 6 panels per leaf */}
+          <DoorGrid z={faceZ} />
 
-          {/* Delicate rose-gold accent rails (not dark grid) */}
-          <FrameMolding
-            position={[0, GLASS_H * 0.22, zFace + 0.01]}
-            size={[GLASS_W - 0.08, 0.008, 0.006]}
-            color={ROSE_GOLD_BRIGHT}
-            roughness={0.07}
-          />
-          <FrameMolding
-            position={[0, -GLASS_H * 0.22, zFace + 0.01]}
-            size={[GLASS_W - 0.08, 0.008, 0.006]}
-            color={ROSE_GOLD_BRIGHT}
-            roughness={0.07}
-          />
-
-          {/* Corner rosette accents */}
-          {(
-            [
-              [-GLASS_W / 2 + 0.06, GLASS_H / 2 - 0.06],
-              [GLASS_W / 2 - 0.06, GLASS_H / 2 - 0.06],
-              [-GLASS_W / 2 + 0.06, -GLASS_H / 2 + 0.06],
-              [GLASS_W / 2 - 0.06, -GLASS_H / 2 + 0.06],
-            ] as const
-          ).map(([x, y]) => (
-            <mesh key={`${x}-${y}`} position={[x, y, zFace + 0.011]} rotation={[0, 0, Math.PI / 4]}>
-              <boxGeometry args={[0.028, 0.028, 0.005]} />
-              <RoseGoldMetal roughness={0.08} color={ROSE_GOLD_BRIGHT} envIntensity={2.4} />
-            </mesh>
-          ))}
-
-          <DoorHandle side={side} />
-
-          {/* Hinges */}
-          {[PANEL_H * 0.38, 0, -PANEL_H * 0.38].map((y) => (
-            <group key={y} position={[hingeEdgeX, y, -0.006]}>
-              <mesh>
-                <cylinderGeometry args={[0.015, 0.015, 0.065, 18]} />
-                <RoseGoldMetal roughness={0.14} color={ROSE_GOLD_DEEP} />
-              </mesh>
-              <mesh position={[side === "left" ? 0.032 : -0.032, 0, 0]}>
-                <boxGeometry args={[0.048, 0.032, 0.032]} />
-                <RoseGoldMetal roughness={0.12} />
-              </mesh>
-            </group>
-          ))}
+          <TBarHandle side={side} />
         </group>
       </group>
     </group>
@@ -287,38 +173,37 @@ function DoorPanel({
 }
 
 function DoorFrame() {
-  const totalW = PANEL_W * 2 + 0.1;
+  const totalW = PANEL_W * 2 + GAP + 0.12;
 
   return (
     <group>
-      <FrameMolding
-        position={[0, PANEL_H / 2 + 0.11, 0.005]}
-        size={[totalW + 0.14, 0.065, 0.038]}
-        color={ROSE_GOLD_LIGHT}
-        roughness={0.1}
-      />
-      <FrameMolding
-        position={[0, PANEL_H / 2 + 0.075, 0.008]}
-        size={[totalW + 0.08, 0.028, 0.028]}
-        roughness={0.12}
-      />
-      <FrameMolding
-        position={[0, -PANEL_H / 2 - 0.01, 0.055]}
-        size={[totalW + 0.12, 0.014, 0.028]}
-        roughness={0.1}
-      />
-      <FrameMolding
-        position={[-PANEL_W - 0.022, 0, 0.006]}
-        size={[0.022, PANEL_H + 0.08, 0.048]}
-        color={ROSE_GOLD_DEEP}
-        roughness={0.15}
-      />
-      <FrameMolding
-        position={[PANEL_W + 0.022, 0, 0.006]}
-        size={[0.022, PANEL_H + 0.08, 0.048]}
-        color={ROSE_GOLD_DEEP}
-        roughness={0.15}
-      />
+      {/* Wide champagne transom header */}
+      <mesh position={[0, PANEL_H / 2 + 0.13, 0.006]}>
+        <boxGeometry args={[totalW + 0.08, 0.09, 0.036]} />
+        <ChampagneMat color={CHAMPAGNE_LIGHT} roughness={0.36} />
+      </mesh>
+
+      {/* Dark recess above door leaves */}
+      <mesh position={[0, PANEL_H / 2 + 0.065, 0.002]}>
+        <boxGeometry args={[totalW, 0.028, 0.042]} />
+        <DarkFrameMat />
+      </mesh>
+
+      {/* Side jambs */}
+      <mesh position={[-(PANEL_W + GAP / 2 + 0.028), 0, 0.004]}>
+        <boxGeometry args={[0.028, PANEL_H + 0.1, 0.05]} />
+        <DarkFrameMat />
+      </mesh>
+      <mesh position={[PANEL_W + GAP / 2 + 0.028, 0, 0.004]}>
+        <boxGeometry args={[0.028, PANEL_H + 0.1, 0.05]} />
+        <DarkFrameMat />
+      </mesh>
+
+      {/* Floor threshold */}
+      <mesh position={[0, -PANEL_H / 2 - 0.012, 0.05]}>
+        <boxGeometry args={[totalW + 0.06, 0.012, 0.03]} />
+        <ChampagneMat color={CHAMPAGNE_SOFT} roughness={0.45} />
+      </mesh>
     </group>
   );
 }

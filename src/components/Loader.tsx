@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { bootCriticalAssets } from "@/lib/preloadAssets";
-import { LOADER_DURATION_MS, LOADER_FADE_MS } from "@/lib/timing";
 import LoaderFallingGlitter from "./LoaderFallingGlitter";
 import LoaderStars from "./LoaderStars";
 
@@ -10,43 +8,43 @@ interface LoaderProps {
   onComplete: () => void;
 }
 
+const LOADER_MS = 3000;
+const FADE_MS = 400;
+
 export default function Loader({ onComplete }: LoaderProps) {
   const [visible, setVisible] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [progress, setProgress] = useState(0);
-  const finishedRef = useRef(false);
+  const doneRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  const finish = useCallback(() => {
-    if (finishedRef.current) return;
-    finishedRef.current = true;
+  const complete = useCallback(() => {
+    if (doneRef.current) return;
+    doneRef.current = true;
     setProgress(100);
     setFadeOut(true);
     window.setTimeout(() => {
       setVisible(false);
       onCompleteRef.current();
-    }, LOADER_FADE_MS);
+    }, FADE_MS);
   }, []);
 
   useEffect(() => {
-    bootCriticalAssets();
-
-    const start = performance.now();
-    const progressTimer = window.setInterval(() => {
-      const elapsed = performance.now() - start;
-      const t = Math.min(1, elapsed / LOADER_DURATION_MS);
+    const started = Date.now();
+    const tick = window.setInterval(() => {
+      const elapsed = Date.now() - started;
+      const t = Math.min(1, elapsed / LOADER_MS);
       const eased = t * t * (3 - 2 * t);
       setProgress(Math.round(eased * 100));
-    }, 32);
+      if (elapsed >= LOADER_MS) {
+        window.clearInterval(tick);
+        complete();
+      }
+    }, 40);
 
-    const doneTimer = window.setTimeout(finish, LOADER_DURATION_MS);
-
-    return () => {
-      window.clearInterval(progressTimer);
-      window.clearTimeout(doneTimer);
-    };
-  }, [finish]);
+    return () => window.clearInterval(tick);
+  }, [complete]);
 
   if (!visible) return null;
 

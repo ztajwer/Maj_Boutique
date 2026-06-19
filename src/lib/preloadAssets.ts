@@ -1,13 +1,6 @@
 import { PRODUCT_PATHS } from "@/data/products";
 
-export const ASSET_URLS = [
-  "/background.png",
-  "/door_bg.png",
-  "/logo.png",
-  "/star.png",
-  "/table-3d.glb",
-  ...PRODUCT_PATHS,
-] as const;
+const IMAGE_URLS = ["/background.png", "/door_bg.png", "/logo.png", "/star.png"] as const;
 
 let booted = false;
 let productsPreloadStarted = false;
@@ -20,14 +13,13 @@ async function getDrei() {
   return dreiModule;
 }
 
-/** Parallel HTTP warm — all assets at once. */
 export function warmFetch(url: string): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
 
   const cached = warmCache.get(url);
   if (cached) return cached;
 
-  const promise = fetch(url, { cache: "force-cache", priority: "high" } as RequestInit)
+  const promise = fetch(url, { cache: "force-cache" })
     .then(async (res) => {
       if (!res.ok) throw new Error(`Failed to load ${url}`);
       await res.arrayBuffer();
@@ -45,21 +37,12 @@ function preloadGltf(path: string) {
   });
 }
 
-/** Fire every asset download in parallel — call as early as possible. */
-export function warmAllAssets() {
-  if (typeof window === "undefined") return;
-  ASSET_URLS.forEach((url) => void warmFetch(url));
-}
-
-/** Images, audio, GLBs, and JS chunks — parallel. */
+/** Fast images + code chunks first — never block the UI timer. */
 export function bootCriticalAssets() {
   if (typeof window === "undefined" || booted) return;
   booted = true;
 
-  warmAllAssets();
-
-  preloadGltf("/table-3d.glb");
-  PRODUCT_PATHS.forEach(preloadGltf);
+  IMAGE_URLS.forEach((url) => void warmFetch(url));
 
   void import("@/components/DoorSceneCanvas");
   void import("@/components/jewelry/JewelryHome");
@@ -69,6 +52,12 @@ export function bootCriticalAssets() {
   void import("@/lib/boutiqueAudio").then(({ preloadBoutiqueAudio }) => {
     preloadBoutiqueAudio();
   });
+
+  window.setTimeout(() => {
+    void warmFetch("/table-3d.glb");
+    preloadGltf("/table-3d.glb");
+    preloadProductAssets();
+  }, 50);
 }
 
 export function waitForTableReady(): Promise<void> {
@@ -83,14 +72,18 @@ export function preloadTableAsset() {
 export function preloadProductAssets() {
   if (productsPreloadStarted) return;
   productsPreloadStarted = true;
-  PRODUCT_PATHS.forEach((path) => {
-    void warmFetch(path);
-    preloadGltf(path);
+
+  PRODUCT_PATHS.forEach((path, index) => {
+    window.setTimeout(() => {
+      void warmFetch(path);
+      preloadGltf(path);
+    }, index * 80);
   });
 }
 
 export function startDoorTransitionPreload() {
   prefetchShopChunk();
+  preloadProductAssets();
 }
 
 export function startShopPreload() {

@@ -58,18 +58,18 @@ export default function Loader({ onComplete }: LoaderProps) {
       <LoaderFallingGlitter progress={progress} />
       <LoaderStars />
 
-      <div className="pointer-events-none absolute inset-8 border border-maj-gold/22 sm:inset-12 md:inset-14" />
+      <div className="pointer-events-none absolute inset-8 border border-maj-gold/20 sm:inset-12 md:inset-14" />
 
-      <div className="loader-shell relative z-10 flex h-full min-h-screen flex-col items-start justify-center">
-        <div className="loader-stack animate-fade-up">
+      <div className="loader-shell loader-shell--center relative z-10 flex h-full min-h-screen flex-col items-center justify-center px-6">
+        <div className="loader-stack loader-stack--center animate-fade-up">
           <div className="loader-logo-wrap">
-            <div className="relative">
-              <div className="absolute -inset-8 rounded-full bg-maj-gold/15 blur-3xl sm:-inset-10" />
-              <div className="loader-logo-size loader-logo-medallion relative flex items-center justify-center overflow-hidden rounded-full border-2 border-maj-gold/45 shadow-[0_0_56px_rgba(200,160,90,0.28)] ring-2 ring-white/60">
+            <div className="relative mx-auto">
+              <div className="absolute -inset-8 rounded-full bg-maj-gold/18 blur-3xl sm:-inset-10" />
+              <div className="loader-logo-size relative mx-auto overflow-hidden rounded-full border-2 border-maj-gold/55 bg-black shadow-[0_0_64px_rgba(212,175,55,0.4)] ring-2 ring-maj-gold/25">
                 <img
-                  src="/wh_logo.jpeg"
+                  src="/logo.png"
                   alt="MAJ Boutique"
-                  className="loader-logo-white h-[78%] w-[78%] object-contain object-center"
+                  className="h-full w-full object-cover object-center"
                   decoding="async"
                   fetchPriority="high"
                   loading="eager"
@@ -79,9 +79,9 @@ export default function Loader({ onComplete }: LoaderProps) {
             </div>
           </div>
 
-          <div className="loader-progress w-full max-w-[min(92vw,28rem)] sm:max-w-[min(88vw,32rem)] md:max-w-md">
+          <div className="loader-progress w-full max-w-xs sm:max-w-sm">
             <div className="mb-3 flex items-center justify-between">
-              <span className="font-sans text-[10px] uppercase tracking-[0.36em] text-maj-brown/50">
+              <span className="font-sans text-[10px] uppercase tracking-[0.36em] text-maj-brown/55">
                 Preparing
               </span>
               <span className="font-sans text-[10px] tabular-nums tracking-wider text-maj-gold">
@@ -89,7 +89,7 @@ export default function Loader({ onComplete }: LoaderProps) {
               </span>
             </div>
 
-            <div className="relative h-1 w-full overflow-visible rounded-full bg-maj-gold/14">
+            <div className="relative h-1 w-full overflow-visible rounded-full bg-maj-gold/15">
               <div
                 className="loader-bar-fill relative h-full rounded-full transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}

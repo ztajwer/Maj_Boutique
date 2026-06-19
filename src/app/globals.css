@@ -644,24 +644,21 @@ body:has(.product-detail-shell) {
   background: linear-gradient(145deg, #f0ddb8 0%, #d4b078 48%, #c49a5e 100%);
 }
 
-.loader-logo-white {
-  filter:
-    brightness(0)
-    invert(1)
-    drop-shadow(0 2px 8px rgba(255, 255, 255, 0.45));
+.loader-shell--center {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
-/* Loader — vertically centered, left-aligned stack */
-.loader-screen--fast {
-  background-color: #faf6f1;
-  background-image: url("/bg.png");
-  background-size: cover;
-  background-position: 72% center;
+.loader-stack--center {
+  align-items: center;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .loader-shell {
-  padding-left: max(1.25rem, 3in);
-  padding-right: 1.25rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .loader-stack {
@@ -677,11 +674,24 @@ body:has(.product-detail-shell) {
 }
 
 .loader-logo-size {
-  width: clamp(14rem, min(62vw, 46vh), 26rem);
-  height: clamp(14rem, min(62vw, 46vh), 26rem);
+  width: clamp(11rem, min(52vw, 40vh), 22rem);
+  height: clamp(11rem, min(52vw, 40vh), 22rem);
 }
 
-/* Loader — silver star.png scatter (50px, 7/sec, 9x speed, 3D flip) */
+/* Loader — dark cinematic variant (optional) */
+.loader-screen--fast {
+  background-color: #faf6f1;
+  background-image: url("/bg.png");
+  background-size: cover;
+  background-position: 72% center;
+}
+
+.loader-shell:not(.loader-shell--center) {
+  padding-left: max(1.25rem, 3in);
+  padding-right: 1.25rem;
+}
+
+/* Loader — silver star.png scatter */
 .loader-stars-field {
   pointer-events: none;
   perspective: 1100px;

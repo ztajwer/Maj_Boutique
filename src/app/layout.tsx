@@ -5,17 +5,11 @@ import SeoJsonLd from "@/components/SeoJsonLd";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
-const EARLY_ASSET_URLS = [
+const EARLY_IMAGE_URLS = [
   "/background.png",
   "/door_bg.png",
   "/logo.png",
   "/star.png",
-  "/table-3d.glb",
-  "/pro1.glb",
-  "/pro2.glb",
-  "/pro3.glb",
-  "/pro4.glb",
-  "/pro5.glb",
 ];
 
 const cormorant = Cormorant_Garamond({
@@ -113,13 +107,9 @@ export default function RootLayout({
         <link rel="preload" href="/logo.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/star.png" as="image" type="image/png" />
         <link rel="preload" href="/door-chime.mp3" as="fetch" crossOrigin="anonymous" />
-        <link rel="preload" href="/table-3d.glb" as="fetch" crossOrigin="anonymous" fetchPriority="high" />
-        {["/pro1.glb", "/pro2.glb", "/pro3.glb", "/pro4.glb", "/pro5.glb"].map((href) => (
-          <link key={href} rel="preload" href={href} as="fetch" crossOrigin="anonymous" />
-        ))}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var u=${JSON.stringify(EARLY_ASSET_URLS)};for(var i=0;i<u.length;i++){fetch(u[i],{cache:"force-cache",priority:"high"}).catch(function(){});}})();`,
+            __html: `(function(){var u=${JSON.stringify(EARLY_IMAGE_URLS)};for(var i=0;i<u.length;i++){fetch(u[i],{cache:"force-cache",priority:"high"}).catch(function(){});}})();`,
           }}
         />
       </head>

@@ -45,7 +45,7 @@ export function bootCriticalAssets() {
   IMAGE_URLS.forEach((url) => void warmFetch(url));
 
   void getDrei().then(({ useTexture }) => {
-    useTexture.preload("/background.png");
+    useTexture.preload("/door_bg.png");
   });
 
   void import("@/components/DoorSceneCanvas");

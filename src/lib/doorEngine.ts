@@ -1,6 +1,7 @@
 import { easeLuxuryOpen } from "@/lib/easing";
+import { DOOR_OPEN_DURATION_S } from "@/lib/timing";
 
-export const DOOR_OPEN_DURATION_S = 1.25;
+export { DOOR_OPEN_DURATION_S };
 
 export type DoorPhase = "waiting" | "opening" | "complete";
 
@@ -14,9 +15,8 @@ export function createDoorAnimState(): DoorAnimState {
   return { phase: "waiting", startTimeMs: 0, startProgress: 0 };
 }
 
-function openDurationMs(startProgress: number) {
-  const remaining = 1 - startProgress;
-  return DOOR_OPEN_DURATION_S * (0.8 + 0.2 * remaining) * 1000;
+function openDurationMs(_startProgress: number) {
+  return DOOR_OPEN_DURATION_S * 1000;
 }
 
 export function tickDoorAnimation(

@@ -1,16 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { bootCriticalAssets, waitForTableReady, preloadProductAssets } from "@/lib/preloadAssets";
+import { bootCriticalAssets } from "@/lib/preloadAssets";
+import { LOADER_DURATION_MS, LOADER_FADE_MS } from "@/lib/timing";
 import LoaderFallingGlitter from "./LoaderFallingGlitter";
 import LoaderStars from "./LoaderStars";
 
 interface LoaderProps {
   onComplete: () => void;
 }
-
-const MIN_MS = 3200;
-const FADE_MS = 900;
 
 export default function Loader({ onComplete }: LoaderProps) {
   const [visible, setVisible] = useState(true);
@@ -26,49 +24,31 @@ export default function Loader({ onComplete }: LoaderProps) {
     window.setTimeout(() => {
       setVisible(false);
       onComplete();
-    }, FADE_MS);
+    }, LOADER_FADE_MS);
   }, [onComplete]);
 
   useEffect(() => {
     bootCriticalAssets();
-    preloadProductAssets();
   }, []);
 
   useEffect(() => {
     const start = performance.now();
     let frame = 0;
-    let assetsReady = false;
-    let minTimeReached = false;
-
-    const tryFinish = () => {
-      if (assetsReady && minTimeReached) finish();
-    };
-
-    void waitForTableReady().then(() => {
-      assetsReady = true;
-      tryFinish();
-    });
 
     const tick = () => {
       const elapsed = performance.now() - start;
-      const t = Math.min(1, elapsed / MIN_MS);
+      const t = Math.min(1, elapsed / LOADER_DURATION_MS);
       const eased = t * t * (3 - 2 * t);
       setProgress(Math.round(eased * 100));
-      if (elapsed >= MIN_MS) {
-        minTimeReached = true;
-        tryFinish();
+      if (elapsed >= LOADER_DURATION_MS) {
+        finish();
         return;
       }
       frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
-    const safety = window.setTimeout(finish, 12_000);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(safety);
-    };
+    return () => cancelAnimationFrame(frame);
   }, [finish]);
 
   if (!visible) return null;
@@ -105,6 +85,7 @@ export default function Loader({ onComplete }: LoaderProps) {
                   className="h-full w-full object-cover object-center"
                   decoding="async"
                   fetchPriority="high"
+                  loading="eager"
                   draggable={false}
                 />
               </div>

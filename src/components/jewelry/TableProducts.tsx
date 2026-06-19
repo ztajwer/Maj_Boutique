@@ -301,17 +301,9 @@ export default function TableProducts({
   anchors: TableSurfaceAnchor[];
   tableRootRef: RefObject<THREE.Group | null>;
 }) {
-  const [visibleCount, setVisibleCount] = useState(2);
-
-  useEffect(() => {
-    if (visibleCount >= products.length) return;
-    const timer = window.setTimeout(() => setVisibleCount((c) => c + 1), 280);
-    return () => window.clearTimeout(timer);
-  }, [visibleCount]);
-
   return (
     <group name="table-products">
-      {products.slice(0, visibleCount).map((product) => {
+      {products.map((product) => {
         const anchor = anchors[product.tableSlot];
         if (!anchor) return null;
 

@@ -13,6 +13,7 @@ export default function BoutiqueBackground() {
           className="shop-room-bg__image"
           decoding="async"
           fetchPriority="high"
+          loading="eager"
           draggable={false}
         />
       </div>

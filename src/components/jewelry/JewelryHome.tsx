@@ -253,7 +253,7 @@ export default function JewelryHome({ visible = true }: JewelryHomeProps) {
     >
       <Canvas
         dpr={getCanvasDprRange()}
-        frameloop="always"
+        frameloop={visible ? "always" : "demand"}
         className="h-full w-full"
         gl={{
           antialias: !isSafari(),

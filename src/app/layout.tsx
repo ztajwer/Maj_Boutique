@@ -95,7 +95,9 @@ export default function RootLayout({
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preload" href="/background.png" as="image" type="image/png" fetchPriority="high" />
+        <link rel="preload" href="/door_bg.png" as="image" type="image/png" />
         <link rel="preload" href="/table-3d.glb" as="fetch" crossOrigin="anonymous" />
+        <link rel="preload" href="/pro1.glb" as="fetch" crossOrigin="anonymous" />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <SeoJsonLd />

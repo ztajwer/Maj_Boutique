@@ -25,7 +25,7 @@ const DoorSceneCanvas = dynamic(() => import("./DoorSceneCanvas"), {
   loading: () => null,
 });
 
-const ShopCarouselView = dynamic(() => import("./shop/ShopCarouselView"), {
+const ShopExperience = dynamic(() => import("./jewelry/ShopExperience"), {
   ssr: false,
   loading: () => null,
 });
@@ -131,7 +131,7 @@ function BoutiqueExperienceInner() {
 
       {entered && (
         <Suspense fallback={null}>
-          <ShopCarouselView visible />
+          <ShopExperience visible showBackground={false} />
         </Suspense>
       )}
 

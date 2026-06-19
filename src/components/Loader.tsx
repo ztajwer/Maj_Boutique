@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { bootCriticalAssets } from "@/lib/preloadAssets";
+import { bootCriticalAssets, waitForTableReady, preloadProductAssets } from "@/lib/preloadAssets";
 import LoaderFallingGlitter from "./LoaderFallingGlitter";
 import LoaderStars from "./LoaderStars";
 
@@ -31,11 +31,23 @@ export default function Loader({ onComplete }: LoaderProps) {
 
   useEffect(() => {
     bootCriticalAssets();
+    preloadProductAssets();
   }, []);
 
   useEffect(() => {
     const start = performance.now();
     let frame = 0;
+    let assetsReady = false;
+    let minTimeReached = false;
+
+    const tryFinish = () => {
+      if (assetsReady && minTimeReached) finish();
+    };
+
+    void waitForTableReady().then(() => {
+      assetsReady = true;
+      tryFinish();
+    });
 
     const tick = () => {
       const elapsed = performance.now() - start;
@@ -43,14 +55,20 @@ export default function Loader({ onComplete }: LoaderProps) {
       const eased = t * t * (3 - 2 * t);
       setProgress(Math.round(eased * 100));
       if (elapsed >= MIN_MS) {
-        finish();
+        minTimeReached = true;
+        tryFinish();
         return;
       }
       frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const safety = window.setTimeout(finish, 12_000);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(safety);
+    };
   }, [finish]);
 
   if (!visible) return null;

@@ -98,14 +98,18 @@ function BoutiqueExperienceInner() {
     startBoutiqueAudioFromGesture(doorProgress);
   }, [onDoorScreen, doorProgress]);
 
+  const shopReveal = entered ? 1 : Math.min(1, Math.max(0, (doorProgress - 0.05) / 0.42));
   const doorOpacity = Math.min(1, Math.max(0, canvasOpacity));
 
   return (
     <div className="relative h-full w-full bg-maj-cream">
       <Loader onComplete={handleLoadComplete} />
 
-      {entered && (
-        <div className="shop-room-bg pointer-events-none fixed inset-0 z-[1]">
+      {ready && (entered || doorProgress > 0.03) && (
+        <div
+          className="shop-room-bg pointer-events-none fixed inset-0 z-[1] transition-opacity duration-700 ease-out"
+          style={{ opacity: shopReveal }}
+        >
           <BoutiqueBackground />
         </div>
       )}
@@ -124,7 +128,7 @@ function BoutiqueExperienceInner() {
             showInvite ? "door-scene--blurred" : ""
           }`}
         >
-          <DoorBackground />
+          <DoorBackground fadeProgress={doorProgress} />
           <BrightnessWash intensity={brightness} />
         </div>
       )}

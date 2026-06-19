@@ -6,8 +6,9 @@ import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const EARLY_IMAGE_URLS = [
-  "/background.png",
+  "/wh_logo.jpeg",
   "/door_bg.png",
+  "/background.png",
   "/logo.png",
   "/star.png",
 ];
@@ -102,6 +103,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
+        <link rel="preload" href="/wh_logo.jpeg" as="image" fetchPriority="high" />
         <link rel="preload" href="/background.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/door_bg.png" as="image" type="image/png" fetchPriority="high" />
         <link rel="preload" href="/logo.png" as="image" type="image/png" fetchPriority="high" />

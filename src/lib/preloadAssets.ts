@@ -1,6 +1,6 @@
 import { PRODUCT_PATHS } from "@/data/products";
 
-const IMAGE_URLS = ["/background.png", "/door_bg.png", "/logo.png", "/star.png"] as const;
+const IMAGE_URLS = ["/wh_logo.jpeg", "/background.png", "/door_bg.png", "/logo.png", "/star.png"] as const;
 
 let booted = false;
 let productsPreloadStarted = false;
@@ -46,6 +46,7 @@ export function bootCriticalAssets() {
 
   void getDrei().then(({ useTexture }) => {
     useTexture.preload("/door_bg.png");
+    useTexture.preload("/background.png");
   });
 
   void import("@/components/DoorSceneCanvas");

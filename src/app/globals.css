@@ -629,6 +629,24 @@ body:has(.product-detail-shell) {
 }
 
 
+/* Loader — bright, white logo */
+.loader-screen--bright {
+  background-color: #ffffff;
+  background-image: linear-gradient(
+    165deg,
+    #ffffff 0%,
+    #fdfbf8 42%,
+    #f8f4ef 100%
+  );
+}
+
+.loader-logo-white {
+  filter:
+    brightness(0)
+    invert(1)
+    drop-shadow(0 4px 20px rgba(180, 140, 80, 0.18));
+}
+
 /* Loader — vertically centered, left-aligned stack */
 .loader-screen--fast {
   background-color: #faf6f1;
